@@ -43,7 +43,7 @@ int askCartegory() // 카테고리를 묻는 함수
     return cartegory;
 }
 
-int addExpense(Data *Data, int count)
+int addExpense(Data *Data, int count) // 데이터 추가하는 함수
 {
     printf("지출 내역을 입력하세요: \n");
 
