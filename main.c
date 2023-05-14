@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h> // 시간 관련 헤더파일 추가
 #include "Ledger.h"
 
 int main()
