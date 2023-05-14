@@ -46,10 +46,9 @@ int askCartegory() // 카테고리를 묻는 함수
 int addExpense(Data *Data, int count) // 데이터 추가하는 함수
 {
     printf("지출 내역을 입력하세요: \n");
-
             printf("1. 식비 :");
             scanf(" %d ", &Data[count].expenses[0]);
-      
+    
             printf("2. 교통비 :");
             scanf(" %d ", &Data[count].expenses[1]);
     
