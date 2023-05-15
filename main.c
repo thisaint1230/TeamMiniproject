@@ -14,7 +14,7 @@ int main()
     printf("사용자 이름을 입력하세요: ");
     scanf("%s", name);
     count = loadFromFile(data, name);
-    
+
     while (1)
     {
         menuType = menu();
@@ -27,6 +27,7 @@ int main()
             viewExpense(data, count);
             break;
         case 3:
+            updateExpense(data, count);
             break;
         case 4:
             break;
