@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "Ledger.h"
 
 int menu()
@@ -21,7 +22,7 @@ int menu()
     printf("0. 종료\n");
 
     printf("메뉴를 선택하세요: ");
-    scanf(" %d", &menu);
+    scanf("%d", &menu);
 
     return menu;
 }
@@ -38,41 +39,61 @@ int askCartegory() // 카테고리를 묻는 함수
     printf("0. 종료\n");
 
     printf("선택: ");
-    scanf(" %d \n", &cartegory);
+    scanf("%d \n", &cartegory);
 
     return cartegory;
 }
 
 int addExpense(Data *Data, int count) // 데이터 추가하는 함수
 {
+
+    struct tm *currentTime;
+    time_t t = time(NULL);
+    currentTime = localtime(&t);
+
+    char torf;
+
+    printf("오늘의 가계부를 작성하시겠습니까? 맞으면 't', 다른 날짜를 입력하고 싶다면 'f': ");
+    scanf(" %c", &torf);
+
+    if (torf == 't')
+    {
+        printf("오늘의 날짜: %d년 %d월 %d일\n", currentTime->tm_year + 1900, currentTime->tm_mon + 1, currentTime->tm_mday);
+        // 오늘 날짜를 사용하여 작업을 수행
+    }
+    else
+    {
+        printf("날짜를 입력하세요 (년 월 일): ");
+        scanf("%d %d %d", &Data[count].date.year, &Data[count].date.month, &Data[count].date.day);
+
+        // 입력한 날짜를 사용하여 작업을 수행
+    }
+
     printf("지출 내역을 입력하세요: \n");
-            printf("1. 식비 :");
-            scanf(" %d ", &Data[count].expenses[0]);
-    
-            printf("2. 교통비 :");
-            scanf(" %d ", &Data[count].expenses[1]);
-    
-            printf("3. 고정 지출 :");
-            scanf(" %d ", &Data[count].expenses[2]);
-    
-            printf("4. 취미·여가 :");
-            scanf(" %d ", &Data[count].expenses[3]);
-      
-            printf("5. 기타 :");
-            scanf(" %d ", &Data[count].expenses[4]);
-        
+    printf("1. 식비 :");
+    scanf("%d", &Data[count].expenses[0]);
+
+    printf("2. 교통비 :");
+    scanf("%d", &Data[count].expenses[1]);
+
+    printf("3. 고정 지출 :");
+    scanf("%d", &Data[count].expenses[2]);
+
+    printf("4. 취미·여가 :");
+    scanf("%d", &Data[count].expenses[3]);
+
+    printf("5. 기타 :");
+    scanf("%d", &Data[count].expenses[4]);
+
     Data[count].amount = 0;
     for (int i = 0; i < 5; i++)
     {
         Data[count].amount += Data[count].expenses[i];
     }
 
-    printf("날짜를 입력하세요 (년 월 일): ");
-    scanf(" %d %d %d", &Data[count].date.year, &Data[count].date.month, &Data[count].date.day);
-
     printf("메모를 입력하세요: ");
     getchar();
-    scanf(" %[^\n]s", Data[count].memo);
+    scanf("%[^\n]s", Data[count].memo);
 
     count++;
     printf("지출이 추가되었습니다.\n");
@@ -86,24 +107,80 @@ void viewExpense(Data *Data, int count) // 조회 함수
         printf("지출 내역이 없습니다.\n");
         return;
     }
-     printf("----- 지출 조회 ----- %d \n",count);
+    printf("----- 지출 조회 ----- %d \n", count);
 
-    for(int i=0; i<count; i++){
-
-    printf(" 1. 식비 : %d \n", Data[count].expenses[0]);
-    printf("2. 교통비 : %d \n", Data[count].expenses[1]);
-    printf("3. 고정 지출 : %d \n", Data[count].expenses[2]);
-    printf("4. 취미·여가 : %d \n", Data[count].expenses[3]);
-    printf("5. 기타 : %d \n", Data[count].expenses[4]);
-    printf("지출 금액: %d\n", Data[count].amount);
-    printf("날짜: %d-%d-%d\n", Data[count].date.year, Data[count].date.month, Data[count].date.day);
-    printf("메모: %s\n", Data[count].memo);
-    printf("\n");
-
+    for (int i = 0; i < count; i++)
+    {
+        printf("날짜: %d-%d-%d\n", Data[i].date.year, Data[i].date.month, Data[i].date.day);
+        printf("1. 식비 : %d \n", Data[i].expenses[0]);
+        printf("2. 교통비 : %d \n", Data[i].expenses[1]);
+        printf("3. 고정 지출 : %d \n", Data[i].expenses[2]);
+        printf("4. 취미·여가 : %d \n", Data[i].expenses[3]);
+        printf("5. 기타 : %d \n", Data[i].expenses[4]);
+        printf("지출 금액: %d\n", Data[i].amount);
+        printf("메모: %s\n", Data[i].memo);
+        printf("\n");
     }
 }
 
-void updateExpense(Data *Data, int count); // 수정 함수
+void updateExpense(Data *Data, int count) // 수정 함수
+{
+    if (count == 0)
+    {
+        printf("지출 내역이 없습니다.\n");
+        return;
+    }
+    viewExpense(Data, count);
+    printf("수정할 날짜를 입력하세요 (년 월 일): ");
+    int updateYear, updateMonth, updateDay;
+    scanf("%d %d %d", &updateYear, &updateMonth, &updateDay);
+
+    int found = 0;
+
+    for (int i = 0; i < count; i++)
+    {
+        if (Data[i].date.year == updateYear && Data[i].date.month == updateMonth && Data[i].date.day == updateDay)
+        {
+            printf("수정할 지출 내역을 입력하세요:\n");
+            printf("1. 식비 :");
+            scanf("%d", &Data[i].expenses[0]);
+
+            printf("2. 교통비 :");
+            scanf("%d", &Data[i].expenses[1]);
+
+            printf("3. 고정 지출 :");
+            scanf("%d", &Data[i].expenses[2]);
+
+            printf("4. 취미·여가 :");
+            scanf("%d", &Data[i].expenses[3]);
+
+            printf("5. 기타 :");
+            scanf("%d", &Data[i].expenses[4]);
+
+            Data[i].amount = 0;
+            for (int j = 0; j < 5; j++)
+            {
+                Data[i].amount += Data[i].expenses[j];
+            }
+
+            printf("날짜를 입력하세요 (년 월 일): ");
+            scanf("%d %d %d", &Data[i].date.year, &Data[i].date.month, &Data[i].date.day);
+
+            printf("메모를 입력하세요: ");
+            getchar();
+            scanf("%[^\n]s", Data[i].memo);
+
+            printf("지출 내역이 수정되었습니다.\n");
+
+            found = 1;
+            break;
+        }
+    }
+    if (found == 0)
+    {
+        printf("해당 날짜의 지출 내역을 찾을 수 없습니다.\n");
+    }
+}
 
 void deleteExpense(Data *Data, int count); // 삭제 함수
 
