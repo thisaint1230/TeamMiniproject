@@ -30,6 +30,7 @@ int main()
             updateExpense(data, count);
             break;
         case 4:
+            count=deleteExpense(data, count);
             break;
         case 5:
             break;
