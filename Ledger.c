@@ -32,8 +32,8 @@ int askCartegory() // 카테고리를 묻는 함수
     printf("카테고리를 선택하세요:\n");
     printf("1. 식비\n");
     printf("2. 교통비\n");
-    printf("3. ...\n"); // 여기에 추가할것들 추가해주세용
-    printf("4. ...\n");
+    printf("3. 고정 지출\n");
+    printf("4. 취미·여가\n");
     printf("5. 기타\n");
     printf("0. 종료\n");
 
@@ -52,10 +52,10 @@ int addExpense(Data *Data, int count) // 데이터 추가하는 함수
             printf("2. 교통비 :");
             scanf(" %d ", &Data[count].expenses[1]);
     
-            printf("3. ... :");
+            printf("3. 고정 지출 :");
             scanf(" %d ", &Data[count].expenses[2]);
     
-            printf("4. ... :");
+            printf("4. 취미·여가 :");
             scanf(" %d ", &Data[count].expenses[3]);
       
             printf("5. 기타 :");
@@ -92,8 +92,8 @@ void viewExpense(Data *Data, int count) // 조회 함수
 
     printf(" 1. 식비 : %d \n", Data[count].expenses[0]);
     printf("2. 교통비 : %d \n", Data[count].expenses[1]);
-    printf("3. ... : %d \n", Data[count].expenses[2]);
-    printf("4. ... : %d \n", Data[count].expenses[3]);
+    printf("3. 고정 지출 : %d \n", Data[count].expenses[2]);
+    printf("4. 취미·여가 : %d \n", Data[count].expenses[3]);
     printf("5. 기타 : %d \n", Data[count].expenses[4]);
     printf("지출 금액: %d\n", Data[count].amount);
     printf("날짜: %d-%d-%d\n", Data[count].date.year, Data[count].date.month, Data[count].date.day);
