@@ -38,13 +38,18 @@ int askCartegory() // 카테고리를 묻는 함수
     printf("0. 종료\n");
 
     printf("선택: ");
+<<<<<<< HEAD
     scanf("%d \n", &cartegory);
+=======
+    scanf("%d", &cartegory);
+>>>>>>> 9854534a68450ce22fdc2b42540414ee24457f33
 
     return cartegory;
 }
 
 int addExpense(Data *Data, int count) // 데이터 추가하는 함수
 {
+<<<<<<< HEAD
     struct tm *currentTime;
     time_t t = time(NULL);
     currentTime = localtime(&t);
@@ -86,6 +91,50 @@ int addExpense(Data *Data, int count) // 데이터 추가하는 함수
     printf("5. 기타 :");
     scanf("%d", &Data[count].expenses[4]);
 
+=======
+
+    struct tm *currentTime;
+    time_t t = time(NULL);
+    currentTime = localtime(&t);
+
+    char torf;
+
+    printf("오늘의 가계부를 작성하시겠습니까? 맞으면 't', 다른 날짜를 입력하고 싶다면 'f': ");
+    scanf(" %c", &torf);
+
+    if (torf == 't')
+    {   
+        Data[count].date.year = currentTime->tm_year + 1900;
+        Data[count].date.month = currentTime->tm_mon + 1;
+        Data[count].date.day = currentTime->tm_mday;
+        printf("오늘의 날짜: %d년 %d월 %d일\n", currentTime->tm_year + 1900, currentTime->tm_mon + 1, currentTime->tm_mday);
+        // 오늘 날짜를 사용하여 작업을 수행
+    }
+    else
+    {
+        printf("날짜를 입력하세요 (년 월 일): ");
+        scanf("%d %d %d", &Data[count].date.year, &Data[count].date.month, &Data[count].date.day);
+
+        // 입력한 날짜를 사용하여 작업을 수행
+    }
+
+    printf("지출 내역을 입력하세요: \n");
+    printf("1. 식비 :");
+    scanf("%d", &Data[count].expenses[0]);
+
+    printf("2. 교통비 :");
+    scanf("%d", &Data[count].expenses[1]);
+
+    printf("3. 고정 지출 :");
+    scanf("%d", &Data[count].expenses[2]);
+
+    printf("4. 취미·여가 :");
+    scanf("%d", &Data[count].expenses[3]);
+
+    printf("5. 기타 :");
+    scanf("%d", &Data[count].expenses[4]);
+
+>>>>>>> 9854534a68450ce22fdc2b42540414ee24457f33
     Data[count].amount = 0;
     for (int i = 0; i < 5; i++)
     {
@@ -108,8 +157,12 @@ void viewExpense(Data *Data, int count) // 조회 함수
         printf("지출 내역이 없습니다.\n");
         return;
     }
+<<<<<<< HEAD
 
     printf("----- 지출 조회 ----- \n");
+=======
+    printf("----- 지출 조회 ----- %d \n", count);
+>>>>>>> 9854534a68450ce22fdc2b42540414ee24457f33
 
     for (int i = 0; i < count; i++)
     {
@@ -147,10 +200,16 @@ void updateExpense(Data *Data, int count) // 수정 함수
             {
                 printf("수정할 카테고리 번호를 입력하세요:\n");
                 category = askCartegory();
+<<<<<<< HEAD
                 if (category == 0)
                     break;
                 printf("수정전 금액입니다 : %d 원 \n 수정될 금액을 입력해주세요: ", Data[i].expenses[category - 1]);
                 scanf("%d", &Data[i].expenses[category - 1]);
+=======
+                if(category==0)break;
+                printf("수정전 금액입니다 : %d 원 \n 수정될 금액을 입력해주세요: ",Data[i].expenses[category-1]);
+                scanf("%d", &Data[i].expenses[category-1]);
+>>>>>>> 9854534a68450ce22fdc2b42540414ee24457f33
             }
 
             Data[i].amount = 0;
@@ -228,14 +287,21 @@ void saveToFile(Data *Data, int count, char filename[100]) // 파일 저장 함�
 
     for (int i = 0; i < count; i++)
     {
+<<<<<<< HEAD
 
         fprintf(file, "%d %d %d ", Data[i].date.year, Data[i].date.month, Data[i].date.day); // 날짜를 파일에 저장
 
+=======
+        fprintf(file, "%d %d %d ", Data[i].date.year, Data[i].date.month, Data[i].date.day); // 날짜를 파일에 저장
+>>>>>>> 9854534a68450ce22fdc2b42540414ee24457f33
         for (int j = 0; j < 5; j++)
         {
             fprintf(file, "%d ", Data[i].expenses[j]); // 지출 내역을 파일에 저장
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9854534a68450ce22fdc2b42540414ee24457f33
         fprintf(file, "%d\n", Data[i].amount); // 지출 금액을 파일에 저장
         fprintf(file, "%s\n", Data[i].memo);   // 메모를 파일에 저장
     }
@@ -255,7 +321,10 @@ int loadFromFile(Data *Data, char filename[100]) // 파일에서 읽어오는 �
 
     int count = 0;
     int a = 0;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9854534a68450ce22fdc2b42540414ee24457f33
     for (int i = 0; i < 100; i++)
     {
         fscanf(file, "%d %d %d", &Data[i].date.year, &Data[i].date.month, &Data[i].date.day); // 년도를 파일에서 읽어옴
