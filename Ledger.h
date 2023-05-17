@@ -25,7 +25,7 @@ void viewExpense(Data *Data, int count); // 조회 함수
 
 void updateExpense(Data *Data, int count); // 수정 함수
 
-void deleteExpense(Data *Data, int count); // 삭제 함수
+int deleteExpense(Data *Data, int count); // 삭제 함수
 
 void saveToFile(Data *Data, int count, char filename[100]); // 파일 저장 함수
 

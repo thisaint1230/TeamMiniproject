@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h> // 시간 관련 헤더파일 추가
 #include "Ledger.h"
 
 int main()
@@ -13,7 +14,7 @@ int main()
     printf("사용자 이름을 입력하세요: ");
     scanf("%s", name);
     count = loadFromFile(data, name);
-    
+
     while (1)
     {
         menuType = menu();
@@ -26,10 +27,13 @@ int main()
             viewExpense(data, count);
             break;
         case 3:
+            updateExpense(data, count);
             break;
         case 4:
+            count=deleteExpense(data, count);
             break;
         case 5:
+            searchExpense(data, count);
             break;
         case 6:
             break;
@@ -39,6 +43,7 @@ int main()
             return 0;
         default:
             printf("잘못된 선택입니다. 다시 선택해주세요.\n");
+            
         }
     }
 
