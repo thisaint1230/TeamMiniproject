@@ -372,8 +372,7 @@ void printMostUsedCategory(Data *Data, int count)
         int categoryIndex = categoryTotals[i].categoryIndex;
         int totalExpense = categoryTotals[i].totalExpense;
 
-        if (totalExpense < previousTotalExpense)
-            rank++;
+        if (totalExpense < previousTotalExpense) rank++;
 
         switch (categoryIndex)
         {
