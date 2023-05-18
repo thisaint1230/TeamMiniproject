@@ -92,10 +92,13 @@ int addExpense(Data *Data, int count) // 데이터 추가하는 함수
         Data[count].amount += Data[count].expenses[i];
     }
 
-    printf("메모를 입력하세요: ");
+    printf("메모를 입력하세요 (없을경우 x 가 입력됩니다 ): ");
     getchar();
     scanf("%[^\n]s", Data[count].memo);
 
+    if (strlen(Data[count].memo) == 0) {
+        strcpy(Data[count].memo, "x");
+    }
     count++;
     printf("지출이 추가되었습니다.\n");
     return count;
@@ -236,6 +239,10 @@ void saveToFile(Data *Data, int count, char filename[100]) // 파일 저장 함�
             fprintf(file, "%d ", Data[i].expenses[j]); // 지출 내역을 파일에 저장
         }
         fprintf(file, "%d\n", Data[i].amount); // 지출 금액을 파일에 저장
+
+        if (strlen(Data[count].memo) == 0) {
+            strcpy(Data[count].memo, "x");
+        }
         fprintf(file, "%s\n", Data[i].memo);   // 메모를 파일에 저장
     }
 
@@ -243,6 +250,7 @@ void saveToFile(Data *Data, int count, char filename[100]) // 파일 저장 함�
 
     printf("파일이 저장되었습니다.\n");
 }
+
 int loadFromFile(Data *Data, char filename[100]) // 파일에서 읽어오는 함수
 {
     FILE *file = fopen(filename, "r");
@@ -252,17 +260,14 @@ int loadFromFile(Data *Data, char filename[100]) // 파일에서 읽어오는 �
         return 0;
     }
 
-    int count = 0;
+    int count = -1;
     int a = 0;
     for (int i = 0; i < 100; i++)
     {
-        fscanf(file, "%d %d %d", &Data[i].date.year, &Data[i].date.month, &Data[i].date.day); // 년도를 파일에서 읽어옴
-
-        if (feof(file))
-            break;
-        fscanf(file, " %d", &Data[i].date.year);  // 년도를 파일에서 읽어옴
-        fscanf(file, " %d", &Data[i].date.month); // 월을 파일에서 읽어옴
-        fscanf(file, " %d", &Data[i].date.day);   // 일을 파일에서 읽어옴
+       if (feof(file))
+                    break;
+        fscanf(file, "%d %d %d", &Data[i].date.year, &Data[i].date.month, &Data[i].date.day); // 날짜를 파일에서 읽어옴
+       
         for (int j = 0; j < 5; j++)
         {
             fscanf(file, " %d", &Data[i].expenses[j]); // 지출 내역을 파일에서 읽어옴
@@ -317,7 +322,83 @@ void searchExpense(Data *Data, int count) // 검색 함수
     }
 }
 
-void printMostUsedCategory(Data *Data, int count); // 가장 많이 쓴 지출 분야 출력 함수
+void printMostUsedCategory(Data *Data, int count)
+{
+    if (count == 0)
+    {
+        printf("지출 내역이 없습니다.\n");
+        return;
+    }
+
+    // 카테고리별 지출 합계를 저장하는 구조체 배열
+    struct CategoryTotal
+    {
+        int categoryIndex;
+        int totalExpense;
+    };
+
+    struct CategoryTotal categoryTotals[5];
+    for (int i = 0; i < 5; i++){
+        categoryTotals[i].totalExpense=0;
+    }
+    // 모든 지출 내역의 카테고리별 지출을 합산
+    for (int i = 0; i < count; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            categoryTotals[j].categoryIndex = j;
+            categoryTotals[j].totalExpense += Data[i].expenses[j];
+        }
+    }
+
+    // 지출 합계를 기준으로 카테고리를 정렬 
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = i + 1; j < 5; j++)
+        {
+            if (categoryTotals[j].totalExpense > categoryTotals[i].totalExpense)
+            {
+                struct CategoryTotal temp = categoryTotals[i];
+                categoryTotals[i] = categoryTotals[j];
+                categoryTotals[j] = temp;
+            }
+        }
+    }
+
+    // 카테고리 순위 출력
+    printf("지출 분야 순위:\n");
+    int rank = 1;
+    int previousTotalExpense = categoryTotals[0].totalExpense;
+    for (int i = 0; i < 5; i++)
+    {
+        int categoryIndex = categoryTotals[i].categoryIndex;
+        int totalExpense = categoryTotals[i].totalExpense;
+
+        if (totalExpense < previousTotalExpense)
+            rank++;
+
+        switch (categoryIndex)
+        {
+        case 0:
+            printf("%d위: 식비 (총 지출: %d)\n", rank, totalExpense);
+            break;
+        case 1:
+            printf("%d위: 교통비 (총 지출: %d)\n", rank, totalExpense);
+            break;
+        case 2:
+            printf("%d위: 고정 지출 (총 지출: %d)\n", rank, totalExpense);
+            break;
+        case 3:
+            printf("%d위: 취미·여가 (총 지출: %d)\n", rank, totalExpense);
+            break;
+        case 4:
+            printf("%d위: 기타 (총 지출: %d)\n", rank, totalExpense);
+            break;
+        }
+
+        previousTotalExpense = totalExpense;
+    }
+}
 
 void viewByMonth(Data *Data, int count); // 월별로 조회 함수
 
