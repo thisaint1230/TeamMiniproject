@@ -96,7 +96,8 @@ int addExpense(Data *Data, int count) // 데이터 추가하는 함수
     getchar();
     scanf("%[^\n]s", Data[count].memo);
 
-    if (strlen(Data[count].memo) == 0) {
+    if (strlen(Data[count].memo) == 0)
+    {
         strcpy(Data[count].memo, "x");
     }
     count++;
@@ -161,11 +162,32 @@ void updateExpense(Data *Data, int count) // 수정 함수
             {
                 Data[i].amount += Data[i].expenses[j];
             }
-
-            printf("메모를 입력하세요: ");
+            char yorn;
+            char plusMemo[100];
+            char * ptr;
+ 
+            printf("메모를 추가하시겠습니까 아니면 수정하시겠습니까? (수정은 c 추가는 p 아무것도 아니라면 아무거나 입력해주세요): ");
             getchar();
-            scanf("%[^\n]s", Data[i].memo);
+            scanf("%c", &yorn);
+            if (yorn == 'c')
+            {
+                printf("수정 전 메모입니다 : %s \n",Data[i].memo);
 
+                printf("수정할 내용를 입력해주세요 : ");
+                getchar();
+                scanf("%[^\n]s", plusMemo);
+                strcpy(Data[i].memo, plusMemo);
+                printf("수정된 메모 입니다 %s",Data[i].memo);
+            }
+            else if (yorn == 'p')
+            {
+                printf("추가할 내용를 입력해주세요 : ");
+                getchar();
+                scanf("%[^\n]s", plusMemo);
+                strcat(Data[i].memo, plusMemo);
+                printf("추가된 메모 입니다 %s",Data[i].memo);
+            }
+           
             printf("지출 내역이 수정되었습니다.\n");
 
             found = 1;
@@ -240,10 +262,11 @@ void saveToFile(Data *Data, int count, char filename[100]) // 파일 저장 함�
         }
         fprintf(file, "%d\n", Data[i].amount); // 지출 금액을 파일에 저장
 
-        if (strlen(Data[count].memo) == 0) {
+        if (strlen(Data[count].memo) == 0)
+        {
             strcpy(Data[count].memo, "x");
         }
-        fprintf(file, "%s\n", Data[i].memo);   // 메모를 파일에 저장
+        fprintf(file, "%s\n", Data[i].memo); // 메모를 파일에 저장
     }
 
     fclose(file);
@@ -264,10 +287,10 @@ int loadFromFile(Data *Data, char filename[100]) // 파일에서 읽어오는 �
     int a = 0;
     for (int i = 0; i < 100; i++)
     {
-       if (feof(file))
-                    break;
+        if (feof(file))
+            break;
         fscanf(file, "%d %d %d", &Data[i].date.year, &Data[i].date.month, &Data[i].date.day); // 날짜를 파일에서 읽어옴
-       
+
         for (int j = 0; j < 5; j++)
         {
             fscanf(file, " %d", &Data[i].expenses[j]); // 지출 내역을 파일에서 읽어옴
@@ -337,8 +360,9 @@ void printMostUsedCategory(Data *Data, int count)
     };
 
     struct CategoryTotal categoryTotals[5];
-    for (int i = 0; i < 5; i++){
-        categoryTotals[i].totalExpense=0;
+    for (int i = 0; i < 5; i++)
+    {
+        categoryTotals[i].totalExpense = 0;
     }
 
     for (int i = 0; i < count; i++)
@@ -372,7 +396,8 @@ void printMostUsedCategory(Data *Data, int count)
         int categoryIndex = categoryTotals[i].categoryIndex;
         int totalExpense = categoryTotals[i].totalExpense;
 
-        if (totalExpense < previousTotalExpense) rank++;
+        if (totalExpense < previousTotalExpense)
+            rank++;
 
         switch (categoryIndex)
         {
@@ -397,18 +422,21 @@ void printMostUsedCategory(Data *Data, int count)
     }
 }
 
-void viewByMonth(Data *Data, int count) {
+void viewByMonth(Data *Data, int count)
+{
     int year, month;
     int totalExpenses = 0;
-    int found=0;
+    int found = 0;
     printf("조회할 연도와 월을 입력하세요 (년 월): ");
     scanf("%d %d", &year, &month);
 
     printf("\n[월별 지출 내역 - %d년 %d월]\n", year, month);
 
     // 해당 월의 지출 내역 출력
-    for (int i = 0; i < count; i++) {
-        if (Data[i].date.year == year && Data[i].date.month == month) {
+    for (int i = 0; i < count; i++)
+    {
+        if (Data[i].date.year == year && Data[i].date.month == month)
+        {
             printf("날짜: %d년 %d월 %d일\n", Data[i].date.year, Data[i].date.month, Data[i].date.day);
             printf("지출 내역:\n");
             printf("식비 : %d ", Data[i].expenses[0]);
@@ -420,11 +448,12 @@ void viewByMonth(Data *Data, int count) {
             printf("메모: %s\n", Data[i].memo);
             printf("--------------------\n");
             totalExpenses += Data[i].amount;
-            found=1;
+            found = 1;
         }
     }
-    if(found==0){
-         printf("\n 해당 월에 지출 내역이 없습니다 \n\n");
+    if (found == 0)
+    {
+        printf("\n 해당 월에 지출 내역이 없습니다 \n\n");
     }
     printf("월 지출: %d\n", totalExpenses);
 } // 월별로 조회 함수
