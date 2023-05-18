@@ -38,6 +38,9 @@ int main()
         case 6:
             printMostUsedCategory(data, count);
             break;
+        case 7:
+            viewByMonth(data, count);
+            break;
         case 0:
             saveToFile(data, count, name);
             printf("프로그램을 종료합니다.\n");

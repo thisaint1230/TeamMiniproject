@@ -38,7 +38,7 @@ int askCartegory() // 카테고리를 묻는 함수
     printf("0. 종료\n");
 
     printf("선택: ");
-    scanf("%d \n", &cartegory);
+    scanf("%d", &cartegory);
 
     return cartegory;
 }
@@ -117,11 +117,11 @@ void viewExpense(Data *Data, int count) // 조회 함수
     for (int i = 0; i < count; i++)
     {
         printf("날짜: %d-%d-%d\n", Data[i].date.year, Data[i].date.month, Data[i].date.day);
-        printf("1. 식비 : %d \n", Data[i].expenses[0]);
-        printf("2. 교통비 : %d \n", Data[i].expenses[1]);
-        printf("3. 고정 지출 : %d \n", Data[i].expenses[2]);
-        printf("4. 취미·여가 : %d \n", Data[i].expenses[3]);
-        printf("5. 기타 : %d \n", Data[i].expenses[4]);
+        printf("식비 : %d ", Data[i].expenses[0]);
+        printf("| 교통비 : %d ", Data[i].expenses[1]);
+        printf("| 고정 지출 : %d ", Data[i].expenses[2]);
+        printf("| 취미·여가 : %d ", Data[i].expenses[3]);
+        printf("| 기타 : %d \n", Data[i].expenses[4]);
         printf("지출 금액: %d\n", Data[i].amount);
         printf("메모: %s\n", Data[i].memo);
         printf("\n");
@@ -152,7 +152,7 @@ void updateExpense(Data *Data, int count) // 수정 함수
                 category = askCartegory();
                 if (category == 0)
                     break;
-                printf("수정전 금액입니다 : %d 원 \n 수정될 금액을 입력해주세요: ", Data[i].expenses[category - 1]);
+                printf("수정전 금액입니다 : %d 원 \n수정될 금액을 입력해주세요: ", Data[i].expenses[category - 1]);
                 scanf("%d", &Data[i].expenses[category - 1]);
             }
 
@@ -256,7 +256,7 @@ int loadFromFile(Data *Data, char filename[100]) // 파일에서 읽어오는 �
     FILE *file = fopen(filename, "r");
     if (file == NULL)
     {
-        printf(" 기존 파일이 없거나 열 수 없어 \n 사용자 의 이름으로 파일을 만듭니다 .\n");
+        printf(" 기존 파일이 없거나 열 수 없어 사용자 의 이름으로 파일을 만듭니다 .\n");
         return 0;
     }
 
@@ -304,11 +304,11 @@ void searchExpense(Data *Data, int count) // 검색 함수
         if (strstr(Data[i].memo, keyword) != NULL)
         {
             printf("날짜: %d-%d-%d\n", Data[i].date.year, Data[i].date.month, Data[i].date.day);
-            printf("1. 식비 : %d \n", Data[i].expenses[0]);
-            printf("2. 교통비 : %d \n", Data[i].expenses[1]);
-            printf("3. 고정 지출 : %d \n", Data[i].expenses[2]);
-            printf("4. 취미·여가 : %d \n", Data[i].expenses[3]);
-            printf("5. 기타 : %d \n", Data[i].expenses[4]);
+            printf("식비 : %d ", Data[i].expenses[0]);
+            printf("| 교통비 : %d ", Data[i].expenses[1]);
+            printf("| 고정 지출 : %d ", Data[i].expenses[2]);
+            printf("| 취미·여가 : %d ", Data[i].expenses[3]);
+            printf("| 기타 : %d \n", Data[i].expenses[4]);
             printf("지출 금액: %d\n", Data[i].amount);
             printf("메모: %s\n", Data[i].memo);
             printf("\n");
@@ -397,7 +397,37 @@ void printMostUsedCategory(Data *Data, int count)
     }
 }
 
-void viewByMonth(Data *Data, int count); // 월별로 조회 함수
+void viewByMonth(Data *Data, int count) {
+    int year, month;
+    int totalExpenses = 0;
+    int found=0;
+    printf("조회할 연도와 월을 입력하세요 (년 월): ");
+    scanf("%d %d", &year, &month);
+
+    printf("\n[월별 지출 내역 - %d년 %d월]\n", year, month);
+
+    // 해당 월의 지출 내역 출력
+    for (int i = 0; i < count; i++) {
+        if (Data[i].date.year == year && Data[i].date.month == month) {
+            printf("날짜: %d년 %d월 %d일\n", Data[i].date.year, Data[i].date.month, Data[i].date.day);
+            printf("지출 내역:\n");
+            printf("식비 : %d ", Data[i].expenses[0]);
+            printf("| 교통비 : %d ", Data[i].expenses[1]);
+            printf("| 고정 지출 : %d ", Data[i].expenses[2]);
+            printf("| 취미·여가 : %d ", Data[i].expenses[3]);
+            printf("| 기타 : %d \n", Data[i].expenses[4]);
+            printf("총 지출: %d\n", Data[i].amount);
+            printf("메모: %s\n", Data[i].memo);
+            printf("--------------------\n");
+            totalExpenses += Data[i].amount;
+            found=1;
+        }
+    }
+    if(found==0){
+         printf("\n 해당 월에 지출 내역이 없습니다 \n\n");
+    }
+    printf("월 지출: %d\n", totalExpenses);
+} // 월별로 조회 함수
 
 void viewByWeek(Data *Data, int count); // 주차별로 조회 함수
 
