@@ -41,6 +41,9 @@ int main()
         case 7:
             viewByMonth(data, count);
             break;
+        case 8:
+            viewByWeek(data, count);
+            break;
         case 0:
             saveToFile(data, count, name);
             printf("프로그램을 종료합니다.\n");

@@ -164,20 +164,20 @@ void updateExpense(Data *Data, int count) // 수정 함수
             }
             char yorn;
             char plusMemo[100];
-            char * ptr;
- 
+            char *ptr;
+
             printf("메모를 추가하시겠습니까 아니면 수정하시겠습니까? (수정은 c 추가는 p 아무것도 아니라면 아무거나 입력해주세요): ");
             getchar();
             scanf("%c", &yorn);
             if (yorn == 'c')
             {
-                printf("수정 전 메모입니다 : %s \n",Data[i].memo);
+                printf("수정 전 메모입니다 : %s \n", Data[i].memo);
 
                 printf("수정할 내용를 입력해주세요 : ");
                 getchar();
                 scanf("%[^\n]s", plusMemo);
                 strcpy(Data[i].memo, plusMemo);
-                printf("수정된 메모 입니다 %s",Data[i].memo);
+                printf("수정된 메모 입니다 %s", Data[i].memo);
             }
             else if (yorn == 'p')
             {
@@ -185,9 +185,9 @@ void updateExpense(Data *Data, int count) // 수정 함수
                 getchar();
                 scanf("%[^\n]s", plusMemo);
                 strcat(Data[i].memo, plusMemo);
-                printf("추가된 메모 입니다 %s",Data[i].memo);
+                printf("추가된 메모 입니다 %s", Data[i].memo);
             }
-           
+
             printf("지출 내역이 수정되었습니다.\n");
 
             found = 1;
@@ -458,7 +458,124 @@ void viewByMonth(Data *Data, int count)
     printf("월 지출: %d\n", totalExpenses);
 } // 월별로 조회 함수
 
-void viewByWeek(Data *Data, int count); // 주차별로 조회 함수
+void viewByWeek(Data *Data, int count)
+{
+
+    int year, month, week;
+    int found = 0;
+    printf("### 단, 그 주차의 달은 월요일이 속한 달을 따라갑니다 \n    예를 들어 5월의 마지막 날이 월요일인 경우 6월 1일은 6월 1주차가 아닌 5월 마지막 주차 입니다. \n");
+    printf("조회할 연도와 월, 조회할 주를 입력하세요 (년 월 주차): ");
+    scanf("%d %d %d", &year, &month, &week);
+
+    struct tm firstDate = {.tm_year = year - 1900, .tm_mon = month - 1, .tm_mday = 1};
+    mktime(&firstDate); // 해당 달의 처음 날의 요일 0이면 일요일
+
+    struct tm lastDate = {.tm_year = year - 1900, .tm_mon = month, .tm_mday = 0};
+    mktime(&lastDate); // 해당 달의 마지막 날짜
+
+    int firstDayOfWeek = firstDate.tm_wday;
+    if (firstDayOfWeek == 0)
+    {
+        firstDayOfWeek = 6; // 일요일을 월요일로 변경
+    }
+    else
+    {
+        firstDayOfWeek--; // 기존 요일 값을 0부터 6까지로 조정
+    }
+
+    int daysToAdd = (week - 1) * 7 - firstDayOfWeek;
+
+    if (daysToAdd < 0)
+    {
+        daysToAdd += 7;
+    }
+
+    int day = 1 + daysToAdd;
+    int maxDay = lastDate.tm_mday;
+
+    printf("Dates in Week %d:\n", week);
+    int j = -1;
+
+    for (int i = 0; i < 7; i++)
+    {
+        if (day <= maxDay)
+        {
+            printf("날짜: %d년 %d월 %d일\n", year, month, day);
+            found=0;
+            for (int i = 0; i < count; i++)
+            {   
+                if (Data[i].date.year == year && Data[i].date.month == month && Data[i].date.day == day)
+                {
+                    printf("지출 내역:\n");
+                    printf("식비 : %d ", Data[i].expenses[0]);
+                    printf("| 교통비 : %d ", Data[i].expenses[1]);
+                    printf("| 고정 지출 : %d ", Data[i].expenses[2]);
+                    printf("| 취미·여가 : %d ", Data[i].expenses[3]);
+                    printf("| 기타 : %d \n", Data[i].expenses[4]);
+                    printf("총 지출: %d\n", Data[i].amount);
+                    printf("메모: %s\n", Data[i].memo);
+                    printf("--------------------\n");
+                    found=1;
+                }
+            }
+            if(found==0)
+                {
+                    printf("######### 지출 내역 이 없습니다 ######### \n");
+                }
+            day++;
+        }
+        else
+        {
+            j = i;
+            break;
+        }
+    }
+
+    if (month >= 12) // 만약 해당 주차는 끝나지 않았지만 달이 끝났을 경우 남은 날짜 출력
+    {
+        year++;
+        month = 1;
+        day = 1;
+    }
+
+    else
+    {
+        month++;
+        day = 1;
+    }
+
+
+
+    if (j != -1)
+    {    found=0;
+        for (int i = j; i < 7; i++)
+        {
+            printf("날짜: %d년 %d월 %d일\n", year, month, day);
+            for (int i = 0; i < count; i++)
+            {   
+                if (Data[i].date.year == year && Data[i].date.month == month && Data[i].date.day == day)
+                {
+                    printf("지출 내역:\n");
+                    printf("식비 : %d ", Data[i].expenses[0]);
+                    printf("| 교통비 : %d ", Data[i].expenses[1]);
+                    printf("| 고정 지출 : %d ", Data[i].expenses[2]);
+                    printf("| 취미·여가 : %d ", Data[i].expenses[3]);
+                    printf("| 기타 : %d \n", Data[i].expenses[4]);
+                    printf("총 지출: %d\n", Data[i].amount);
+                    printf("메모: %s\n", Data[i].memo);
+                    printf("--------------------\n");
+                    found=1;
+                }
+
+            }
+            if(found==0)
+                {
+                    printf("######### 지출 내역 이 없습니다 ######### \n");
+                }
+            day++;
+        }
+    }
+}
 
 void setExpenseGoal(Data *Data, int count); // 지출 목표 설정 함수
 
