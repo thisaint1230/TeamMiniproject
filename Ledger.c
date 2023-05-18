@@ -330,7 +330,6 @@ void printMostUsedCategory(Data *Data, int count)
         return;
     }
 
-    // 카테고리별 지출 합계를 저장하는 구조체 배열
     struct CategoryTotal
     {
         int categoryIndex;
@@ -341,7 +340,7 @@ void printMostUsedCategory(Data *Data, int count)
     for (int i = 0; i < 5; i++){
         categoryTotals[i].totalExpense=0;
     }
-    // 모든 지출 내역의 카테고리별 지출을 합산
+
     for (int i = 0; i < count; i++)
     {
         for (int j = 0; j < 5; j++)
@@ -351,7 +350,6 @@ void printMostUsedCategory(Data *Data, int count)
         }
     }
 
-    // 지출 합계를 기준으로 카테고리를 정렬 
     for (int i = 0; i < 4; i++)
     {
         for (int j = i + 1; j < 5; j++)

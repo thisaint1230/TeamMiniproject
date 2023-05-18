@@ -24,7 +24,6 @@ int main()
             count = addExpense(data, count);
             break;
         case 2:
-            printf("\n---------%d --------\n",count);
             viewExpense(data, count);
             break;
         case 3:
