@@ -7,21 +7,22 @@
 int menu()
 { // 메뉴 함수
     int menu;
-    printf("----- 메뉴 -----\n");
-    printf("1. 지출 추가\n");
-    printf("2. 지출 조회\n");
-    printf("3. 지출 수정\n");
-    printf("4. 지출 삭제\n");
-    printf("5. 지출 검색\n");
-    printf("6. 가장 많이 쓴 지출 분야 출력\n");
-    printf("7. 월별로 조회\n");
-    printf("8. 주차별로 조회\n");
-    printf("9. 지출 목표 설정\n");
-    printf("10. 목표 달성 여부 확인\n");
-    printf("11. 리워드 또는 패널티 적용\n");
-    printf("0. 종료\n");
+    printf("========== 가계부 MENU ==========\n");
+    printf("\n\t1. 지출 추가\n");
+    printf("\t2. 지출 조회\n");
+    printf("\t3. 지출 수정\n");
+    printf("\t4. 지출 삭제\n");
+    printf("\t5. 지출 검색\n");
+    printf("\t6. 가장 많이 쓴 지출 분야는?\n");
+    printf("\t7. 월별 지출 조회\n");
+    printf("\t8. 주차별 지출 조회\n");
+    printf("\t9. 지출 목표 설정\n");
+    printf("\t10. 목표 달성 여부 확인\n");
+    printf("\t11. REWARD OR PENALTY\n");
+    printf("\t0. 종료\n");
+    printf("\n==================================\n");
 
-    printf("메뉴를 선택하세요: ");
+    printf("\n=> 메뉴를 선택하세요! : ");
     scanf("%d", &menu);
 
     return menu;
