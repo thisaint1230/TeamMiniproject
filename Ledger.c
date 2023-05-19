@@ -52,7 +52,9 @@ int addExpense(Data *Data, int count) // 데이터 추가하는 함수
 
     char torf;
 
-    printf("오늘의 가계부를 작성하시겠습니까? 맞으면 't', 다른 날짜를 입력하고 싶다면 'f': ");
+    printf("오늘의 가계부를 작성하시겠습니까?\n);
+    printf("맞으면 't', 다른 날짜를 입력하고 싶다면 'f': ");
+           
     scanf(" %c", &torf);
 
     if (torf == 't')
@@ -72,19 +74,19 @@ int addExpense(Data *Data, int count) // 데이터 추가하는 함수
     }
 
     printf("지출 내역을 입력하세요: \n");
-    printf("1. 식비 :");
+    printf("1. 식비 : ");
     scanf("%d", &Data[count].expenses[0]);
 
-    printf("2. 교통비 :");
+    printf("2. 교통비 : ");
     scanf("%d", &Data[count].expenses[1]);
 
-    printf("3. 고정 지출 :");
+    printf("3. 고정 지출 : ");
     scanf("%d", &Data[count].expenses[2]);
 
-    printf("4. 취미·여가 :");
+    printf("4. 취미·여가 : ");
     scanf("%d", &Data[count].expenses[3]);
 
-    printf("5. 기타 :");
+    printf("5. 기타 : ");
     scanf("%d", &Data[count].expenses[4]);
 
     Data[count].amount = 0;
@@ -93,7 +95,7 @@ int addExpense(Data *Data, int count) // 데이터 추가하는 함수
         Data[count].amount += Data[count].expenses[i];
     }
 
-    printf("메모를 입력하세요 (없을경우 x가 입력됩니다 ): ");
+    printf("메모를 입력하세요 (없을경우 x가 입력됩니다) : ");
     getchar();
     scanf("%[^\n]s", Data[count].memo);
 
@@ -114,7 +116,7 @@ void viewExpense(Data *Data, int count) // 조회 함수
         return;
     }
 
-    printf("----- 지출 조회 ----- \n");
+    printf("===== 지출 조회 ===== \n");
 
     for (int i = 0; i < count; i++)
     {
@@ -150,7 +152,7 @@ void updateExpense(Data *Data, int count) // 수정 함수
         {
             while (1)
             {
-                printf("수정할 카테고리 번호를 입력하세요:\n");
+                printf("수정할 카테고리 번호를 입력하세요: \n");
                 category = askCartegory();
                 if (category == 0)
                     break;
@@ -167,12 +169,12 @@ void updateExpense(Data *Data, int count) // 수정 함수
             char plusMemo[100];
             char *ptr;
 
-            printf("메모를 추가하시겠습니까 아니면 수정하시겠습니까? (수정은 c 추가는 p 아무것도 아니라면 아무거나 입력해주세요): ");
+            printf("메모를 추가하시겠습니까, 아니면 수정하시겠습니까? (수정은 c,추가는 p, 아무것도 아니라면 아무거나 입력해주세요): ");
             getchar();
             scanf("%c", &yorn);
             if (yorn == 'c')
             {
-                printf("수정 전 메모입니다 : %s \n", Data[i].memo);
+                printf("수정 전 메모 : %s \n", Data[i].memo);
 
                 printf("수정할 내용를 입력해주세요 : ");
                 getchar();
@@ -225,7 +227,7 @@ int deleteExpense(Data *Data, int count) // 삭제 함수
         }
         if (deleteindex == 0)
         {
-            printf("날짜를 잘못 입력하셨습니다 다시 입력해주세요 \n");
+            printf("날짜를 잘못 입력하셨습니다. 다시 입력해주세요 \n");
         }
         else
             break;
@@ -306,6 +308,7 @@ int loadFromFile(Data *Data, char filename[100]) // 파일에서 읽어오는 �
     printf("파일이 불러와졌습니다.\n");
 
     return count;
+    
 }
 
 void searchExpense(Data *Data, int count) // 검색 함수
