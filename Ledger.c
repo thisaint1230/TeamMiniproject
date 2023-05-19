@@ -92,7 +92,7 @@ int addExpense(Data *Data, int count) // 데이터 추가하는 함수
         Data[count].amount += Data[count].expenses[i];
     }
 
-    printf("메모를 입력하세요 (없을경우 x 가 입력됩니다 ): ");
+    printf("메모를 입력하세요 (없을경우 x가 입력됩니다 ): ");
     getchar();
     scanf("%[^\n]s", Data[count].memo);
 
