@@ -775,7 +775,6 @@ int checkGoalAchievement(Data *Data, int count, Goal *Goal, char filename[100]) 
         return 0;
     }
 }
-
 void applyRewardOrPenalty(int passOrFail) // 리워드 또는 패널티 적용 함수
 {
     char *admonition[8] = {"동전을 아끼지 않는 자는 은화를 가질 가격이 없다. -독일 속담-",
