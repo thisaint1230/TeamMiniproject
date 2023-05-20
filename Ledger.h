@@ -24,7 +24,6 @@ typedef struct
 
 int menu(); // 메뉴
 
-
 int askExpenses(); // 카테고리를 묻고 리턴하는 함수
 
 int addExpense(Data *Data, int count); // 추가 함수

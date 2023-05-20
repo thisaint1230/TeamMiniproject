@@ -12,9 +12,10 @@ int main()
     int count = 0;
     int menuType;
     Goal goal;
+    
     printf("사용자 이름을 입력하세요 (개인 데이터의 파일명이 됩니다): ");
     scanf("%s", name);
-    
+
     count = loadFromFile(data, name);
 
     while (1)
