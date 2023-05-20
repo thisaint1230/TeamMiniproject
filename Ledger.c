@@ -52,7 +52,7 @@ int addExpense(Data *Data, int count) // 데이터 추가하는 함수
 
     char torf;
 
-    printf("오늘의 가계부를 작성하시겠습니까?/n");
+    printf("오늘의 가계부를 작성하시겠습니까? \n");
     printf("맞으면 't', 다른 날짜를 입력하고 싶다면 'f': ");
 
     scanf(" %c", &torf);
@@ -466,7 +466,7 @@ void viewByWeek(Data *Data, int count)
 
     int year, month, week;
     int found = 0;
-    printf("### 단, 그 주차의 달은 월요일이 속한 달을 따라갑니다 \n    예를 들어 5월의 마지막 날이 월요일인 경우 6월 1일은 6월 1주차가 아닌 5월 마지막 주차 입니다. \n");
+    printf(" 주차의 달은 그 주의 월요일이 속한 달을 따라갑니다 \n (예를 들어 5월의 마지막 날이 월요일인 경우 6월 1일은 6월 1주차가 아닌 5월 마지막 주차 입니다.) \n");
     printf("조회할 연도와 월, 조회할 주를 입력하세요 (년 월 주차): ");
     scanf("%d %d %d", &year, &month, &week);
 
@@ -495,8 +495,6 @@ void viewByWeek(Data *Data, int count)
 
     int day = 1 + daysToAdd;
     int maxDay = lastDate.tm_mday;
-
-    printf("Dates in Week %d:\n", week);
     int j = -1;
 
     for (int i = 0; i < 7; i++)
@@ -505,18 +503,18 @@ void viewByWeek(Data *Data, int count)
         {
             printf("날짜: %d년 %d월 %d일\n", year, month, day);
             found = 0;
-            for (int i = 0; i < count; i++)
+            for (int k = 0; k < count; k++)
             {
-                if (Data[i].date.year == year && Data[i].date.month == month && Data[i].date.day == day)
+                if (Data[k].date.year == year && Data[k].date.month == month && Data[k].date.day == day)
                 {
                     printf("지출 내역:\n");
-                    printf("식비 : %d ", Data[i].expenses[0]);
-                    printf("| 교통비 : %d ", Data[i].expenses[1]);
-                    printf("| 고정 지출 : %d ", Data[i].expenses[2]);
-                    printf("| 취미·여가 : %d ", Data[i].expenses[3]);
-                    printf("| 기타 : %d \n", Data[i].expenses[4]);
-                    printf("총 지출: %d\n", Data[i].amount);
-                    printf("메모: %s\n", Data[i].memo);
+                    printf("식비 : %d ", Data[k].expenses[0]);
+                    printf("| 교통비 : %d ", Data[k].expenses[1]);
+                    printf("| 고정 지출 : %d ", Data[k].expenses[2]);
+                    printf("| 취미·여가 : %d ", Data[k].expenses[3]);
+                    printf("| 기타 : %d \n", Data[k].expenses[4]);
+                    printf("총 지출: %d\n", Data[k].amount);
+                    printf("메모: %s\n", Data[k].memo);
                     printf("--------------------\n");
                     found = 1;
                 }
@@ -533,38 +531,35 @@ void viewByWeek(Data *Data, int count)
             break;
         }
     }
-
     if (month >= 12) // 만약 해당 주차는 끝나지 않았지만 달이 끝났을 경우 남은 날짜 출력
     {
         year++;
         month = 1;
         day = 1;
     }
-
     else
     {
         month++;
         day = 1;
     }
-
     if (j != -1)
     {
         found = 0;
         for (int i = j; i < 7; i++)
         {
             printf("날짜: %d년 %d월 %d일\n", year, month, day);
-            for (int i = 0; i < count; i++)
+            for (int k = 0; k < count; k++)
             {
-                if (Data[i].date.year == year && Data[i].date.month == month && Data[i].date.day == day)
+                if (Data[k].date.year == year && Data[k].date.month == month && Data[k].date.day == day)
                 {
                     printf("지출 내역:\n");
-                    printf("식비 : %d ", Data[i].expenses[0]);
-                    printf("| 교통비 : %d ", Data[i].expenses[1]);
-                    printf("| 고정 지출 : %d ", Data[i].expenses[2]);
-                    printf("| 취미·여가 : %d ", Data[i].expenses[3]);
-                    printf("| 기타 : %d \n", Data[i].expenses[4]);
-                    printf("총 지출: %d\n", Data[i].amount);
-                    printf("메모: %s\n", Data[i].memo);
+                    printf("식비 : %d ", Data[k].expenses[0]);
+                    printf("| 교통비 : %d ", Data[k].expenses[1]);
+                    printf("| 고정 지출 : %d ", Data[k].expenses[2]);
+                    printf("| 취미·여가 : %d ", Data[k].expenses[3]);
+                    printf("| 기타 : %d \n", Data[k].expenses[4]);
+                    printf("총 지출: %d\n", Data[k].amount);
+                    printf("메모: %s\n", Data[k].memo);
                     printf("--------------------\n");
                     found = 1;
                 }
@@ -578,12 +573,11 @@ void viewByWeek(Data *Data, int count)
     }
 }
 
-int setExpenseGoal(Goal *Goal, char filename[100]) // 지출 목표 설정 함수
+int setExpenseGoal(Data *Data, int count, Goal *Goal, char filename[100]) // 지출 목표 설정 함수
 {
     char goalname[100];
     strcpy(goalname, filename);
     strcat(goalname, "'s goal");
-
     FILE *goalfile = fopen(goalname, "r");
 
     if (goalfile != NULL)
@@ -592,39 +586,8 @@ int setExpenseGoal(Goal *Goal, char filename[100]) // 지출 목표 설정 함�
         printf("이미 목표가 설정되어 있습니다.\n");
         return 0;
     }
-
-    printf("1주일간 목표를 설정하려면 1, 1달간 목표를 설정하려면 2를 입력하세요: ");
-    int duration;
-    scanf("%d", &duration);
-
-    printf("목표하는 액수를 입력하세요");
-    int expenGoal=0;
-    scanf("%d",&expenGoal);
-
-    time_t currentTime = time(0);
-    struct tm *localTime = localtime(&currentTime);
-
-    struct tm goalDate = *localTime;
-    if (duration == 1)
-    {
-        goalDate.tm_mday += 7;
-    }
-    else if (duration == 2)
-    {
-        goalDate.tm_mon += 1;
-    }
-    else
-    {
-        printf("잘못된 입력입니다. 1 또는 2를 입력하세요.\n");
-        return 0;
-    }
-
-    Goal->expenseGoal =expenGoal;
-    Goal->goalStartDate = currentTime;
-    Goal->goalEndDate = mktime(&goalDate);
-
     fclose(goalfile);
-    
+
     goalfile = fopen(goalname, "w");
     if (goalfile == NULL)
     {
@@ -632,18 +595,149 @@ int setExpenseGoal(Goal *Goal, char filename[100]) // 지출 목표 설정 함�
         return 0;
     }
 
+    printf("목표하는 액수를 입력하세요 (목표 기간이 1주간 인지 1달간인지 생각하시고 입력 해주세요) : ");
+    int expenseGoal;
+    scanf("%d", &expenseGoal);
+    Goal->expenseGoal = expenseGoal;
     fprintf(goalfile, "%d\n", Goal->expenseGoal);
-    fprintf(goalfile, "%ld\n", Goal->goalStartDate);
-    fprintf(goalfile, "%ld\n", Goal->goalEndDate);
 
+    printf("1주일간 목표라면  1, 1달간 목표라면 2를 입력하세요: ");
+    int duration;
+    scanf("%d", &duration);
+    if (duration == 1)
+    {
+        int year, month, week;
+        printf(" 주차의 달은 그 주의 월요일이 속한 달을 따라갑니다 \n (예를 들어 5월의 마지막 날이 월요일인 경우 6월 1일은 6월 1주차가 아닌 5월 마지막 주차 입니다.) \n");
+        printf("시작 할 연도와 월, 주차를 입력하세요 (년 월 주차): ");
+        scanf("%d %d %d", &year, &month, &week);
+        struct tm firstDate = {.tm_year = year - 1900, .tm_mon = month - 1, .tm_mday = 1};
+        mktime(&firstDate); // 해당 달의 처음 날의 요일 0이면 일요일
+
+        struct tm lastDate = {.tm_year = year - 1900, .tm_mon = month, .tm_mday = 0};
+        mktime(&lastDate); // 해당 달의 마지막 날짜
+
+        int firstDayOfWeek = firstDate.tm_wday;
+        if (firstDayOfWeek == 0)
+        {
+            firstDayOfWeek = 6; // 일요일을 월요일로 변경
+        }
+        else
+        {
+            firstDayOfWeek--; // 기존 요일 값을 0부터 6까지로 조정
+        }
+        int daysToAdd = (week - 1) * 7 - firstDayOfWeek;
+        if (daysToAdd < 0)
+        {
+            daysToAdd += 7;
+        }
+        int day = 1 + daysToAdd;
+        int maxDay = lastDate.tm_mday;
+        int j = -1;
+        for (int i = 0; i < 7; i++)
+        {
+            if (day <= maxDay)
+            {
+                Goal->goalDate[i].year = year;
+                Goal->goalDate[i].month = month;
+                Goal->goalDate[i].day = day;
+                fprintf(goalfile, "%d %d %d", Goal->goalDate[i].year, Goal->goalDate[i].month, Goal->goalDate[i].day);
+                for (int k = 0; k < count; k++)
+                {
+                    if (Data[k].date.year == year && Data[k].date.month == month && Data[k].date.day == day)
+                    {
+                        fprintf(goalfile, " %d\n", Data[k].amount);
+                    }
+                    else
+                    {
+                        fprintf(goalfile, " 0\n");
+                        break;
+                    }
+                }
+                day++;
+            }
+            else
+            {
+                j = i;
+                break;
+            }
+        }
+        if (month >= 12) // 만약 해당 주차는 끝나지 않았지만 달이 끝났을 경우 남은 날짜 입력
+        {
+            year++;
+            month = 1;
+            day = 1;
+        }
+        else
+        {
+            month++;
+            day = 1;
+        }
+        if (j != -1)
+        {
+            for (int i = j; i < 7; i++)
+            {
+                Goal->goalDate[i].year = year;
+                Goal->goalDate[i].month = month;
+                Goal->goalDate[i].day = day;
+                fprintf(goalfile, "%d %d %d", Goal->goalDate[i].year, Goal->goalDate[i].month, Goal->goalDate[i].day);
+                for (int k = 0; k < count; k++)
+                {
+                    if (Data[k].date.year == year && Data[k].date.month == month && Data[k].date.day == day)
+                    {
+                        fprintf(goalfile, " %d\n", Data[k].amount);
+                    }
+                    else
+                    {
+                        fprintf(goalfile, " 0\n");
+                        break;
+                    }
+                }
+                day++;
+            }
+        }
+    }
+    else if (duration == 2)
+    {
+        printf("시작할 달을 입력해 주세요 ");
+
+        int year, month;
+        printf("시작 할 연도와 월, 주차를 입력하세요 ( 년 월 ): ");
+        scanf("%d %d", &year, &month);
+        struct tm firstDate = {.tm_year = year - 1900, .tm_mon = month - 1, .tm_mday = 1};
+        mktime(&firstDate);
+
+        struct tm lastDate = {.tm_year = year - 1900, .tm_mon = month, .tm_mday = 0};
+        mktime(&lastDate); // 해당 달의 마지막 날짜
+
+        for (int i = firstDate.tm_mday; i < lastDate.tm_mday; i++)
+        {
+            Goal->goalDate[i].year = year;
+            Goal->goalDate[i].month = month;
+            Goal->goalDate[i].day = i;
+            fprintf(goalfile, "%d %d %d", Goal->goalDate[i].year, Goal->goalDate[i].month, Goal->goalDate[i].day);
+            for (int j = 0; j < count; j++)
+            {
+                if (Data[j].date.year == year && Data[j].date.month == month && Data[j].date.day == i)
+                {
+                    fprintf(goalfile, " %d\n", Data[j].amount);
+                }
+                else
+                {
+                    fprintf(goalfile, " 0\n");
+                    break;
+                }
+            }
+        }
+    }
+    else
+    {
+        printf("잘못된 입력입니다. 1 또는 2를 입력하세요.\n");
+        return 0;
+    }
+
+    printf("목표가 설정되었습니다.\n");
     fclose(goalfile);
-
-    struct tm *startDate = localtime(&(Goal->goalStartDate));
-    struct tm *endDate = localtime(&(Goal->goalEndDate));
-
-    printf("목표가 설정되었습니다.\n목표 시작일은 %s목표 종료일은 %s입니다.\n", asctime(startDate), asctime(endDate));
-
-    return 1;
+    return duration;
 }
 
 int checkGoalAchievement(Data *Data, int count, Goal *Goal, char filename[100]) // 목표 달성 여부 확인 함수
@@ -656,41 +750,23 @@ int checkGoalAchievement(Data *Data, int count, Goal *Goal, char filename[100]) 
 
     if (goalfile != NULL)
     {
-        fscanf(goalfile, "%d\n", &Goal->expenseGoal);
-        fscanf(goalfile, "%ld\n", &Goal->goalStartDate);
-        fscanf(goalfile, "%ld\n", &Goal->goalEndDate);
-
-        // 현재 날짜 및 시간 가져오기
-        time_t currentTime = time(0);
-        struct tm *localTime = localtime(&currentTime);
-
-        int daysPassed = (int)(difftime(currentTime, Goal->goalStartDate) / (60 * 60 * 24));
-        int daysRemain = (int)((Goal->goalEndDate - currentTime) / (60 * 60 * 24));
-
-        // 목표 설정 시작일로부터 오늘까지의 지출 계산
-        int totalExpenseSinceStart = 0;
-
-        for (int i = 0; i < count; i++)
+        printf("기간 동안의 지출 그래프 입니다~! ( 최소단위 1000원 )\n");
+        fscanf(goalfile, "%d", &Goal->expenseGoal);
+        int totalExpense = 0, count, stars = 0, i = 0;
+        while (!feof(goalfile))
         {
-            struct tm dataDate = {.tm_year = Data[i].date.year - 1900, .tm_mon = Data[i].date.month - 1, .tm_mday = Data[i].date.day};
-            time_t dataTime = mktime(&dataDate);
-
-            if (compareDates(Goal->goalStartDate, dataTime) <= 0 && compareDates(dataTime, Goal->goalEndDate) <= 0)
-            {
-                totalExpenseSinceStart += Data[i].amount;
-            }
+            fscanf(goalfile, "%d %d %d %d", &Goal->goalDate[i].year, &Goal->goalDate[i].month, &Goal->goalDate[i].day, &count);
+            i++;
+            totalExpense += count;
+            stars = count / 1000;
+            for (int j = 0; j < stars; j++)
+                printf("*");
+            printf("\n");
         }
-
-        // 여기에서 Data 구조체를 이용하여 목표 설정 시작일부터 오늘까지의 지출 정보를 계산
-
-        printf("목표 설정 날짜: %s", asctime(localtime(&Goal->goalStartDate)));
-        printf("오늘의 날짜: %s", asctime(localTime));
-        printf("목표 설정 시작일로부터 경과한 일수: %d일\n", daysPassed);
-        printf("목표 설정 시작일로부터 남은 일수: %d일\n", daysRemain);
-        printf("목표 설정 시작일로부터 오늘까지의 총 지출: %d\n", totalExpenseSinceStart);
-        printf("목표 지출: %d\n", Goal->expenseGoal);
-
-        fclose(goalfile);
+        if (Goal->expenseGoal >= totalExpense)
+            applyRewardOrPenalty(1);
+        else
+            applyRewardOrPenalty(0);
         return 1;
     }
     else
@@ -700,20 +776,23 @@ int checkGoalAchievement(Data *Data, int count, Goal *Goal, char filename[100]) 
     }
 }
 
-int compareDates(time_t date1, time_t date2)
+void applyRewardOrPenalty(int passOrFail) // 리워드 또는 패널티 적용 함수
 {
-    if (date1 < date2)
+    char *admonition[8] = {"동전을 아끼지 않는 자는 은화를 가질 가격이 없다. -독일 속담-",
+                           "당신은 두 가지 방법으로 돈을 벌 수 있습니다. 더 많이 벌거나 적게 쓰는 것입니다. -존 호프 브라이언트-",
+                           "쓰고 남은 돈을 저축하지 말고 저축하고 남은 돈을 써라. -워렌 버핏-",
+                           "돈을 두배로 만드는 안전한 방법은  한 번 접어서 주머니에 넣는 것입니다. - 킨 허바드",
+                           "돈은 통제를 위한 매커니즘이다. -데이비드 코텐-",
+                           "절약하지 않는 자는 고통받게 될 것이니라 -공자-",
+                           "한 푼 아낀 것은 한 푼 번 것이나 마찬가지다. -벤자민 프랭클린-",
+                           "망령되이 얻은 재물은 줄어가고 손으로 모은 것은 늘어가느니라- 잠언 13장 11절"
+                           };
+    if (passOrFail == 1)
     {
-        return -1;
+        printf("다음 구절을 교훈삼아 다음에는 꼭 목표치를 이루시길 바랍니다 \n %s \n", admonition[rand() % 8]);
     }
-    else if (date1 > date2)
+    else if (passOrFail == 0)
     {
-        return 1;
-    }
-    else
-    {
-        return 0;
+        /* code */
     }
 }
-
-void applyRewardOrPenalty(Data *Data, int count); // 리워드 또는 패널티 적용 함수

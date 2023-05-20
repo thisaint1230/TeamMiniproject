@@ -5,12 +5,13 @@
 #include "Ledger.h"
 
 int main()
-{
+{   
+    srand(time(0));
     Data data[100];
     char name[100];
     int count = 0;
     int menuType;
-    Goal *goal;
+    Goal goal;
     printf("사용자 이름을 입력하세요 (개인 데이터의 파일명이 됩니다): ");
     scanf("%s", name);
     count = loadFromFile(data, name);
@@ -45,13 +46,14 @@ int main()
             viewByWeek(data, count);
             break;
         case 9:
-            setExpenseGoal(goal,name);
+            setExpenseGoal(data, count,&goal,name);
             break;
         case 10:
-            checkGoalAchievement(data,count,goal,name);
+            checkGoalAchievement(data,count,&goal,name);
             break;
         case 0:
             saveToFile(data, count, name);
+            applyRewardOrPenalty(1);
             printf("프로그램을 종료합니다.\n");
             return 0;
         default:

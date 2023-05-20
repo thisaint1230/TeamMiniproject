@@ -18,8 +18,8 @@ typedef struct
 typedef struct
 {
     int expenseGoal; // 지출 목표
-    time_t goalStartDate; //목표 시작일
-    time_t goalEndDate; // 목표 종료일
+    int GoalSuccess;
+    Date goalDate[31];
 } Goal;
 
 int menu(); // 메뉴
@@ -46,10 +46,8 @@ void viewByMonth(Data *Data, int count); // 월별로 조회 함수
 
 void viewByWeek(Data *Data, int count); // 주차별로 조회 함수
 
-int setExpenseGoal(Goal* Goal,char filename[100]); // 지출 목표 설정 함수
+int setExpenseGoal( Data *Data, int count , Goal *Goal, char filename[100]); // 지출 목표 설정 함수
 
 int checkGoalAchievement(Data *Data, int count, Goal* Goal,char filename[100]); // 목표 달성 여부 확인 함수
 
-int compareDates(time_t date1, time_t date2); // 시간 비교함수
-
-void applyRewardOrPenalty(Data *Data, int count); // 리워드 또는 패널티 적용 함수
+void applyRewardOrPenalty(int passOrFail); // 리워드 또는 패널티 적용 함수
