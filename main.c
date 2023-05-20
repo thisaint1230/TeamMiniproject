@@ -10,7 +10,7 @@ int main()
     char name[100];
     int count = 0;
     int menuType;
-
+    Goal *goal;
     printf("사용자 이름을 입력하세요 (개인 데이터의 파일명이 됩니다): ");
     scanf("%s", name);
     count = loadFromFile(data, name);
@@ -43,6 +43,12 @@ int main()
             break;
         case 8:
             viewByWeek(data, count);
+            break;
+        case 9:
+            setExpenseGoal(goal,name);
+            break;
+        case 10:
+            checkGoalAchievement(data,count,goal,name);
             break;
         case 0:
             saveToFile(data, count, name);

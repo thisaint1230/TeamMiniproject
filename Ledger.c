@@ -47,14 +47,14 @@ int askCartegory() // 카테고리를 묻는 함수
 int addExpense(Data *Data, int count) // 데이터 추가하는 함수
 {
     struct tm *currentTime;
-    time_t t = time(NULL);
+    time_t t = time(0);
     currentTime = localtime(&t);
 
     char torf;
 
-    printf("오늘의 가계부를 작성하시겠습니까?\n);
+    printf("오늘의 가계부를 작성하시겠습니까?/n");
     printf("맞으면 't', 다른 날짜를 입력하고 싶다면 'f': ");
-           
+
     scanf(" %c", &torf);
 
     if (torf == 't')
@@ -308,7 +308,6 @@ int loadFromFile(Data *Data, char filename[100]) // 파일에서 읽어오는 �
     printf("파일이 불러와졌습니다.\n");
 
     return count;
-    
 }
 
 void searchExpense(Data *Data, int count) // 검색 함수
@@ -505,9 +504,9 @@ void viewByWeek(Data *Data, int count)
         if (day <= maxDay)
         {
             printf("날짜: %d년 %d월 %d일\n", year, month, day);
-            found=0;
+            found = 0;
             for (int i = 0; i < count; i++)
-            {   
+            {
                 if (Data[i].date.year == year && Data[i].date.month == month && Data[i].date.day == day)
                 {
                     printf("지출 내역:\n");
@@ -519,13 +518,13 @@ void viewByWeek(Data *Data, int count)
                     printf("총 지출: %d\n", Data[i].amount);
                     printf("메모: %s\n", Data[i].memo);
                     printf("--------------------\n");
-                    found=1;
+                    found = 1;
                 }
             }
-            if(found==0)
-                {
-                    printf("######### 지출 내역 이 없습니다 ######### \n");
-                }
+            if (found == 0)
+            {
+                printf("######### 지출 내역 이 없습니다 ######### \n");
+            }
             day++;
         }
         else
@@ -548,15 +547,14 @@ void viewByWeek(Data *Data, int count)
         day = 1;
     }
 
-
-
     if (j != -1)
-    {    found=0;
+    {
+        found = 0;
         for (int i = j; i < 7; i++)
         {
             printf("날짜: %d년 %d월 %d일\n", year, month, day);
             for (int i = 0; i < count; i++)
-            {   
+            {
                 if (Data[i].date.year == year && Data[i].date.month == month && Data[i].date.day == day)
                 {
                     printf("지출 내역:\n");
@@ -568,21 +566,154 @@ void viewByWeek(Data *Data, int count)
                     printf("총 지출: %d\n", Data[i].amount);
                     printf("메모: %s\n", Data[i].memo);
                     printf("--------------------\n");
-                    found=1;
+                    found = 1;
                 }
-
             }
-            if(found==0)
-                {
-                    printf("######### 지출 내역 이 없습니다 ######### \n");
-                }
+            if (found == 0)
+            {
+                printf("######### 지출 내역 이 없습니다 ######### \n");
+            }
             day++;
         }
     }
 }
 
-void setExpenseGoal(Data *Data, int count); // 지출 목표 설정 함수
+int setExpenseGoal(Goal *Goal, char filename[100]) // 지출 목표 설정 함수
+{
+    char goalname[100];
+    strcpy(goalname, filename);
+    strcat(goalname, "'s goal");
 
-void checkGoalAchievement(Data *Data, int count); // 목표 달성 여부 확인 함수
+    FILE *goalfile = fopen(goalname, "r");
+
+    if (goalfile != NULL)
+    {
+        fclose(goalfile);
+        printf("이미 목표가 설정되어 있습니다.\n");
+        return 0;
+    }
+
+    printf("1주일간 목표를 설정하려면 1, 1달간 목표를 설정하려면 2를 입력하세요: ");
+    int duration;
+    scanf("%d", &duration);
+
+    printf("목표하는 액수를 입력하세요");
+    int expenGoal=0;
+    scanf("%d",&expenGoal);
+
+    time_t currentTime = time(0);
+    struct tm *localTime = localtime(&currentTime);
+
+    struct tm goalDate = *localTime;
+    if (duration == 1)
+    {
+        goalDate.tm_mday += 7;
+    }
+    else if (duration == 2)
+    {
+        goalDate.tm_mon += 1;
+    }
+    else
+    {
+        printf("잘못된 입력입니다. 1 또는 2를 입력하세요.\n");
+        return 0;
+    }
+
+    Goal->expenseGoal =expenGoal;
+    Goal->goalStartDate = currentTime;
+    Goal->goalEndDate = mktime(&goalDate);
+
+    fclose(goalfile);
+    
+    goalfile = fopen(goalname, "w");
+    if (goalfile == NULL)
+    {
+        printf("목표 설정에 실패했습니다.\n");
+        return 0;
+    }
+
+    fprintf(goalfile, "%d\n", Goal->expenseGoal);
+    fprintf(goalfile, "%ld\n", Goal->goalStartDate);
+    fprintf(goalfile, "%ld\n", Goal->goalEndDate);
+
+    fclose(goalfile);
+
+    struct tm *startDate = localtime(&(Goal->goalStartDate));
+    struct tm *endDate = localtime(&(Goal->goalEndDate));
+
+    printf("목표가 설정되었습니다.\n목표 시작일은 %s목표 종료일은 %s입니다.\n", asctime(startDate), asctime(endDate));
+
+    return 1;
+}
+
+int checkGoalAchievement(Data *Data, int count, Goal *Goal, char filename[100]) // 목표 달성 여부 확인 함수
+{
+    char goalname[100];
+    strcpy(goalname, filename);
+    strcat(goalname, "'s goal");
+
+    FILE *goalfile = fopen(goalname, "r");
+
+    if (goalfile != NULL)
+    {
+        fscanf(goalfile, "%d\n", &Goal->expenseGoal);
+        fscanf(goalfile, "%ld\n", &Goal->goalStartDate);
+        fscanf(goalfile, "%ld\n", &Goal->goalEndDate);
+
+        // 현재 날짜 및 시간 가져오기
+        time_t currentTime = time(0);
+        struct tm *localTime = localtime(&currentTime);
+
+        int daysPassed = (int)(difftime(currentTime, Goal->goalStartDate) / (60 * 60 * 24));
+        int daysRemain = (int)((Goal->goalEndDate - currentTime) / (60 * 60 * 24));
+
+        // 목표 설정 시작일로부터 오늘까지의 지출 계산
+        int totalExpenseSinceStart = 0;
+
+        for (int i = 0; i < count; i++)
+        {
+            struct tm dataDate = {.tm_year = Data[i].date.year - 1900, .tm_mon = Data[i].date.month - 1, .tm_mday = Data[i].date.day};
+            time_t dataTime = mktime(&dataDate);
+
+            if (compareDates(Goal->goalStartDate, dataTime) <= 0 && compareDates(dataTime, Goal->goalEndDate) <= 0)
+            {
+                totalExpenseSinceStart += Data[i].amount;
+            }
+        }
+
+        // 여기에서 Data 구조체를 이용하여 목표 설정 시작일부터 오늘까지의 지출 정보를 계산
+
+        printf("목표 설정 날짜: %s", asctime(localtime(&Goal->goalStartDate)));
+        printf("오늘의 날짜: %s", asctime(localTime));
+        printf("목표 설정 시작일로부터 경과한 일수: %d일\n", daysPassed);
+        printf("목표 설정 시작일로부터 남은 일수: %d일\n", daysRemain);
+        printf("목표 설정 시작일로부터 오늘까지의 총 지출: %d\n", totalExpenseSinceStart);
+        printf("목표 지출: %d\n", Goal->expenseGoal);
+
+        fclose(goalfile);
+        return 1;
+    }
+    else
+    {
+        printf("먼저 목표 설정을 해주세요 \n");
+        return 0;
+    }
+}
+
+int compareDates(time_t date1, time_t date2)
+{
+    if (date1 < date2)
+    {
+        return -1;
+    }
+    else if (date1 > date2)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
 
 void applyRewardOrPenalty(Data *Data, int count); // 리워드 또는 패널티 적용 함수
