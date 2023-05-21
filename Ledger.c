@@ -751,17 +751,17 @@ int checkGoalAchievement(Data *Data, int count, Goal *Goal, char filename[100]) 
     {
         printf("기간 동안의 지출 그래프 입니다~! ( 최소단위 1000원 )\n");
         fscanf(goalfile, "%d", &Goal->expenseGoal);
-        int totalExpense = 0, count, stars = 0, i = 0;
+        int totalExpense = 0, cash, stars = 0, i = 0;
         while (!feof(goalfile))
         {
-            fscanf(goalfile, "%d %d %d %d", &Goal->goalDate[i].year, &Goal->goalDate[i].month, &Goal->goalDate[i].day, &count);
+            fscanf(goalfile, "%d %d %d", &Goal->goalDate[i].year, &Goal->goalDate[i].month, &Goal->goalDate[i].day,&cash);
             if(Goal->goalDate[i].year==0)break;
-            totalExpense += count;
-            stars = count / 1000;
+            totalExpense += cash;
+            stars = cash / 1000;
             printf("[%d년%2d월%2d일] | ",Goal->goalDate[i].year, Goal->goalDate[i].month, Goal->goalDate[i].day);
             for (int j = 0; j < stars; j++)
                 printf("$ ");
-            printf("\t(%d원)\n",count);
+            printf("\t(%d원)\n",cash);
             i++;
         }
         printf("목표 금액 %d 원 사용한 금액 %d \n",Goal->expenseGoal,totalExpense );
