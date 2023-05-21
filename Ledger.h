@@ -50,4 +50,4 @@ int setExpenseGoal( Data *Data, int count , Goal *Goal, char filename[100]); // 
 
 int checkGoalAchievement(Data *Data, int count, Goal* Goal,char filename[100]); // 목표 달성 여부 확인 함수
 
-void applyRewardOrPenalty(int passOrFail); // 리워드 또는 패널티 적용 함수
+void applyRewardOrPenalty(int passOrFail); // 리워드 또는 패널티 적용 함수 가 메뉴가 아닌 10번 안에서 동작하는 함수
