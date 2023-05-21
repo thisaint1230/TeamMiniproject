@@ -582,10 +582,17 @@ int setExpenseGoal(Data *Data, int count, Goal *Goal, char filename[100]) // 지
     if (goalfile != NULL)
     {   
         int goal, year,month,day;
+        int lastyear,lastmonth,lastday;
+        int trash;
         fscanf(goalfile,"%d",&goal);
-        fscanf(goalfile,"%d %d %d",&year,&month,&day);
+        fscanf(goalfile,"%d %d %d %d",&year,&month,&day,&trash);
+        while(!feof(goalfile)){
+            if(year<0)break;
+            fscanf(goalfile,"%d %d %d %d",&lastyear,&lastmonth,&lastday,&trash);
+        }
         fclose(goalfile);
-        printf("이미 목표가 설정되어 있습니다.\n 목표 금액은 %d 원 이고 시작일은 %d년 %d월 %d일 입니다\n",goal,year,month,day);
+        printf("이미 목표가 설정되어 있습니다.\n 목표 금액은 %d 원 이고 시작일은 %d년 %d월 %d일 마지막 일은 %d년 %d월 %d일 입니다\n",goal,year,month,day,lastyear,lastmonth,lastday);
+        
         return 0;
     }
     fclose(goalfile);
