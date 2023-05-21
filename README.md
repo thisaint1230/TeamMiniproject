@@ -3,7 +3,7 @@
 ## 소개
 매일 가계부를 작성하고, 본인이 가장 많은 지출한 부분을 확인할 수 있으며, 개인의 목표를 설정한 후 달성 여부에 따라 패널티 혹은 리워드를 받을 수 있는 가계부 프로그램입니다. 
 
-![euro-870757_1920](https://www.freepik.com/free-vector/calculator-budget-management-icons_25638039.htm#query=account%20book&position=26&from_view=search&track=ais))
+![img](https://www.freepik.com/free-vector/calculator-budget-management-icons_25638039.htm#query=account%20book&position=26&from_view=search&track=ais))
 
 ## 기능
 - 기본 CRUD 기능(추가, 조회, 수정, 삭제)
