@@ -7,7 +7,7 @@
 int menu()
 { // 메뉴 함수
     int menu;
-    printf("========== 가계부 MENU ==========\n");
+    printf("\n========== 가계부 MENU ==========\n");
     printf("\n\t1. 지출 추가\n");
     printf("\t2. 지출 조회\n");
     printf("\t3. 지출 수정\n");
@@ -16,7 +16,7 @@ int menu()
     printf("\t6. 가장 많이 쓴 지출 분야는?\n");
     printf("\t7. 월별 지출 조회\n");
     printf("\t8. 주차별 지출 조회\n");
-    printf("\t9. 지출 목표 설정\n");
+    printf("\t9. 지출 목표 설정 or 지출 목표 업데이트 및 수정 (이미 설정했다면) \n");
     printf("\t10. 목표 달성 여부 확인\n");
     printf("\t0. 종료\n");
     printf("\n==================================\n");
@@ -138,7 +138,27 @@ void updateExpense(Data *Data, int count) // 수정 함수
         printf("지출 내역이 없습니다.\n");
         return;
     }
-    viewExpense(Data, count);
+    printf ("수정하기 위해 어느 데이터를 보시겠습니까 ?\n\n 1. 모든 데이터\t 2.주간 데이터\t 3.월간 데이터\t 0.프로그램 종료\n");
+    int oneOrTwoOrThree=0;
+    printf("숫자를 입력하세요 : ");
+    scanf("%d",&oneOrTwoOrThree);
+    switch (oneOrTwoOrThree)
+    {
+    case 1:
+        viewExpense(Data, count);
+        break;
+    case 2:
+        viewByWeek(Data, count);
+        break;
+    case 3:
+        viewByMonth(Data, count);
+        break;
+    default:
+        printf("수정을 종료합니다!\n");
+        return;
+        break;
+
+    }
     printf("수정할 날짜를 입력하세요 (년 월 일): ");
     int updateYear, updateMonth, updateDay;
     scanf("%d %d %d", &updateYear, &updateMonth, &updateDay);
@@ -209,7 +229,27 @@ int deleteExpense(Data *Data, int count) // 삭제 함수
         printf("지출 내역이 없습니다.\n");
         return count;
     }
-    viewExpense(Data, count);
+    printf ("삭제하기 위해 어느 데이터를 보시겠습니까 ?\n\n 1. 모든 데이터\t 2.주간 데이터\t 3.월간 데이터\t 0.프로그램 종료\n");
+    int oneOrTwoOrThree=0;
+    printf("숫자를 입력하세요 : ");
+    scanf("%d",&oneOrTwoOrThree);
+    switch (oneOrTwoOrThree)
+    {
+    case 1:
+        viewExpense(Data, count);
+        break;
+    case 2:
+        viewByWeek(Data, count);
+        break;
+    case 3:
+        viewByMonth(Data, count);
+        break;
+    default:
+        printf("삭제를 종료합니다!\n");
+        return;
+        break;
+
+    }
     printf("삭제할 날짜를 입력하세요 (년 월 일): ");
     int deleteYear, deleteMonth, deleteDay;
     scanf("%d %d %d", &deleteYear, &deleteMonth, &deleteDay);
@@ -465,8 +505,8 @@ void viewByWeek(Data *Data, int count)
 
     int year, month, week;
     int found = 0;
-    printf(" 주차의 달은 그 주의 월요일이 속한 달을 따라갑니다 \n (예를 들어 5월의 마지막 날이 월요일인 경우 6월 1일은 6월 1주차가 아닌 5월 마지막 주차 입니다.) \n");
-    printf("조회할 연도와 월, 조회할 주를 입력하세요 (년 월 주차): ");
+    printf(" \n그 주차의 달은 그 주의 월요일이 속한 달을 따라갑니다 \n (예를 들어 5월의 마지막 날이 월요일인 경우 6월 1일은 6월 1주차가 아닌 5월 마지막 주차 입니다.) \n");
+    printf("\n조회할 연도와 월, 조회할 주를 입력하세요 (년 월 주차): ");
     scanf("%d %d %d", &year, &month, &week);
 
     struct tm firstDate = {.tm_year = year - 1900, .tm_mon = month - 1, .tm_mday = 1};
@@ -592,8 +632,15 @@ int setExpenseGoal(Data *Data, int count, Goal *Goal, char filename[100]) // 지
         }
         fclose(goalfile);
         printf("이미 목표가 설정되어 있습니다.\n 목표 금액은 %d 원 이고 시작일은 %d년 %d월 %d일 마지막 일은 %d년 %d월 %d일 입니다\n",goal,year,month,day,lastyear,lastmonth,lastday);
-        
-        return 0;
+        printf("기존 데이터를 목표 데이터에 업데이트 하거나 목표를 수정 하시겠습니까? (만약 데이터의 변경사항이 있다면 해야합니다) \n");
+        printf("\n 맞으면 y 아니라면 아무거나 눌러주세요 : ");
+        char update;
+        getchar();
+        scanf("%c",&update);
+        if(update=='y'){
+            printf(" 데이터를 업데이트 하시려면 기존의 데이터 그대로 입력하시고 수정하시려면 변경해 주세요 \n \n[기존 목표 금액은 %d 원 이고 시작일은 %d년 %d월 %d일 마지막 일은 %d년 %d월 %d일 입니다]\n\n",goal,year,month,day,lastyear,lastmonth,lastday);
+        }
+        else return 0;
     }
     fclose(goalfile);
 
