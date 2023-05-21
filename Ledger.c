@@ -186,7 +186,6 @@ void updateExpense(Data *Data, int count) // 수정 함수
             }
             char yorn;
             char plusMemo[100];
-            char *ptr;
 
             printf("메모를 추가하시겠습니까, 아니면 수정하시겠습니까? (수정은 c,추가는 p, 아무것도 아니라면 아무거나 입력해주세요): ");
             getchar();
