@@ -18,7 +18,6 @@ int menu()
     printf("\t8. 주차별 지출 조회\n");
     printf("\t9. 지출 목표 설정\n");
     printf("\t10. 목표 달성 여부 확인\n");
-    printf("\t11. REWARD OR PENALTY\n");
     printf("\t0. 종료\n");
     printf("\n==================================\n");
 
@@ -581,9 +580,12 @@ int setExpenseGoal(Data *Data, int count, Goal *Goal, char filename[100]) // 지
     FILE *goalfile = fopen(goalname, "r");
 
     if (goalfile != NULL)
-    {
+    {   
+        int goal, year,month,day;
+        fscanf(goalfile,"%d",&goal);
+        fscanf(goalfile,"%d %d %d",&year,&month,&day);
         fclose(goalfile);
-        printf("이미 목표가 설정되어 있습니다.\n");
+        printf("이미 목표가 설정되어 있습니다.\n 목표 금액은 %d 원 이고 시작일은 %d년 %d월 %d일 입니다\n",goal,year,month,day);
         return 0;
     }
     fclose(goalfile);
@@ -635,6 +637,7 @@ int setExpenseGoal(Data *Data, int count, Goal *Goal, char filename[100]) // 지
         int j = -1;
         for (int i = 0; i < 7; i++)
         {
+            int found = 0;
             if (day <= maxDay)
             {
                 Goal->goalDate[i].year = year;
@@ -643,16 +646,13 @@ int setExpenseGoal(Data *Data, int count, Goal *Goal, char filename[100]) // 지
                 fprintf(goalfile, "%d %d %d", Goal->goalDate[i].year, Goal->goalDate[i].month, Goal->goalDate[i].day);
                 for (int k = 0; k < count; k++)
                 {
-                    if (Data[k].date.year == year && Data[k].date.month == month && Data[k].date.day == day)
+                    if (Data[k].date.year == Goal->goalDate[i].year && Data[k].date.month == Goal->goalDate[i].month && Data[k].date.day == Goal->goalDate[i].day)
                     {
                         fprintf(goalfile, " %d\n", Data[k].amount);
-                    }
-                    else
-                    {
-                        fprintf(goalfile, " 0\n");
-                        break;
+                        found = 1;
                     }
                 }
+                if (!found) fprintf(goalfile, " 0\n");
                 day++;
             }
             else
@@ -661,6 +661,7 @@ int setExpenseGoal(Data *Data, int count, Goal *Goal, char filename[100]) // 지
                 break;
             }
         }
+
         if (month >= 12) // 만약 해당 주차는 끝나지 않았지만 달이 끝났을 경우 남은 날짜 입력
         {
             year++;
@@ -672,8 +673,10 @@ int setExpenseGoal(Data *Data, int count, Goal *Goal, char filename[100]) // 지
             month++;
             day = 1;
         }
+
         if (j != -1)
         {
+            int found = 0;
             for (int i = j; i < 7; i++)
             {
                 Goal->goalDate[i].year = year;
@@ -682,16 +685,13 @@ int setExpenseGoal(Data *Data, int count, Goal *Goal, char filename[100]) // 지
                 fprintf(goalfile, "%d %d %d", Goal->goalDate[i].year, Goal->goalDate[i].month, Goal->goalDate[i].day);
                 for (int k = 0; k < count; k++)
                 {
-                    if (Data[k].date.year == year && Data[k].date.month == month && Data[k].date.day == day)
+                    if (Data[k].date.year == Goal->goalDate[i].year && Data[k].date.month == Goal->goalDate[i].month && Data[k].date.day == Goal->goalDate[i].day)
                     {
                         fprintf(goalfile, " %d\n", Data[k].amount);
                     }
-                    else
-                    {
-                        fprintf(goalfile, " 0\n");
-                        break;
-                    }
                 }
+                if (!found)
+                    fprintf(goalfile, " 0\n");
                 day++;
             }
         }
@@ -711,33 +711,32 @@ int setExpenseGoal(Data *Data, int count, Goal *Goal, char filename[100]) // 지
 
         for (int i = firstDate.tm_mday; i < lastDate.tm_mday; i++)
         {
+            int found = 0;
             Goal->goalDate[i].year = year;
             Goal->goalDate[i].month = month;
             Goal->goalDate[i].day = i;
             fprintf(goalfile, "%d %d %d", Goal->goalDate[i].year, Goal->goalDate[i].month, Goal->goalDate[i].day);
             for (int j = 0; j < count; j++)
             {
-                if (Data[j].date.year == year && Data[j].date.month == month && Data[j].date.day == i)
+                if (Data[j].date.year == Goal->goalDate[i].year && Data[j].date.month == Goal->goalDate[i].month && Data[j].date.day == Goal->goalDate[i].day)
                 {
                     fprintf(goalfile, " %d\n", Data[j].amount);
-                }
-                else
-                {
-                    fprintf(goalfile, " 0\n");
-                    break;
+                    found = 1;
                 }
             }
+            if (!found) fprintf(goalfile, " 0\n");
         }
     }
-    else
-    {
-        printf("잘못된 입력입니다. 1 또는 2를 입력하세요.\n");
-        return 0;
-    }
 
-    printf("목표가 설정되었습니다.\n");
-    fclose(goalfile);
-    return duration;
+else
+{
+    printf("잘못된 입력입니다. 1 또는 2를 입력하세요.\n");
+    return 0;
+}
+
+printf("목표가 설정되었습니다.\n");
+fclose(goalfile);
+return duration;
 }
 
 int checkGoalAchievement(Data *Data, int count, Goal *Goal, char filename[100]) // 목표 달성 여부 확인 함수
@@ -756,17 +755,18 @@ int checkGoalAchievement(Data *Data, int count, Goal *Goal, char filename[100]) 
         while (!feof(goalfile))
         {
             fscanf(goalfile, "%d %d %d %d", &Goal->goalDate[i].year, &Goal->goalDate[i].month, &Goal->goalDate[i].day, &count);
-            i++;
+            if(Goal->goalDate[i].year==0)break;
             totalExpense += count;
             stars = count / 1000;
+            printf("[%d년%2d월%2d일] | ",Goal->goalDate[i].year, Goal->goalDate[i].month, Goal->goalDate[i].day);
             for (int j = 0; j < stars; j++)
-                printf("*");
-            printf("\n");
+                printf("$ ");
+            printf("\t(%d원)\n",count);
+            i++;
         }
-        if (Goal->expenseGoal >= totalExpense)
-            applyRewardOrPenalty(1);
-        else
-            applyRewardOrPenalty(0);
+        printf("목표 금액 %d 원 사용한 금액 %d \n",Goal->expenseGoal,totalExpense );
+        if (Goal->expenseGoal <= totalExpense) applyRewardOrPenalty(1);
+        else applyRewardOrPenalty(0);
         return 1;
     }
     else
@@ -785,14 +785,40 @@ void applyRewardOrPenalty(int passOrFail) // 리워드 또는 패널티 적용 �
                            "돈은 통제를 위한 매커니즘이다. -데이비드 코텐-",
                            "절약하지 않는 자는 고통받게 될 것이니라 -공자-",
                            "한 푼 아낀 것은 한 푼 번 것이나 마찬가지다. -벤자민 프랭클린-",
-                           "망령되이 얻은 재물은 줄어가고 손으로 모은 것은 늘어가느니라- 잠언 13장 11절"
-                           };
+                           "망령되이 얻은 재물은 줄어가고 손으로 모은 것은 늘어가느니라- 잠언 13장 11절"};
     if (passOrFail == 1)
-    {
+    {   
+        printf("!!!!!!!!!! 이런 실패하셨군요 !!!!!!!!!\n ");
         printf("다음 구절을 교훈삼아 다음에는 꼭 목표치를 이루시길 바랍니다 \n %s \n", admonition[rand() % 8]);
     }
     else if (passOrFail == 0)
     {
-        /* code */
+        printf("########## 아직 실패하지 않으셨습니다! ##########\n ");
+        printf("혹시 오늘이 도전 마지막 날 인가요 ? (맞으면 y 아니면 아무거나 입력하세요) : ");
+        char yorn ;
+        getchar();
+        scanf("%c",&yorn);
+        if(yorn=='y'){
+            char reword[5][100];
+            printf("\t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+            printf("\t축하드립니다!!! 도전을 성공하셨습니다!!!!!\n");
+            printf("\t________________________________________\n");
+            printf("도전 성공시 가지고 싶은것들 5개를 적어주세요 랜덤으로 하나를 골라드립니다! \n");
+            for(int i=0; i<5; i++){
+                printf("%d번째 : ",i+1);
+                getchar();
+                scanf("%[^\n]s",reword[i]);
+            }
+            printf("\t -----\t -----\t -----\t -----\t -----\t\n");
+            printf("\t|     |\t|     |\t|     |\t|     |\t|     |\t\n");
+            printf("\t|  1  |\t|  2  |\t|  3  |\t|  4  |\t|  5  |\t\n");
+            printf("\t|     |\t|     |\t|     |\t|     |\t|     |\t\n");
+            printf("\t -----\t -----\t -----\t -----\t -----\t\n");
+            printf("번호 하나를 입력하세요 : ");
+            int num;
+            scanf("%d",&num);
+            printf("\t 도전 성공 기념으로 %s 이 나왔습니다~~~\n",reword[(rand()+num)%5]);
+        }
+        else printf("남은 기간 화이팅 하세요!\n");
     }
 }

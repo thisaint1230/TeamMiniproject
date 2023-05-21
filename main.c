@@ -55,7 +55,6 @@ int main()
             break;
         case 0:
             saveToFile(data, count, name);
-            applyRewardOrPenalty(1);
             printf("프로그램을 종료합니다.\n");
             return 0;
         default:
