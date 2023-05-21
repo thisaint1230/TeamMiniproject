@@ -754,7 +754,7 @@ int checkGoalAchievement(Data *Data, int count, Goal *Goal, char filename[100]) 
         int totalExpense = 0, cash, stars = 0, i = 0;
         while (!feof(goalfile))
         {
-            fscanf(goalfile, "%d %d %d", &Goal->goalDate[i].year, &Goal->goalDate[i].month, &Goal->goalDate[i].day,&cash);
+            fscanf(goalfile, "%d %d %d %d", &Goal->goalDate[i].year, &Goal->goalDate[i].month, &Goal->goalDate[i].day,&cash);
             if(Goal->goalDate[i].year==0)break;
             totalExpense += cash;
             stars = cash / 1000;
