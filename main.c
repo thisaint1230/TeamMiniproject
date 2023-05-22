@@ -14,8 +14,9 @@ int main()
     Goal goal;
     
     printf("사용자 이름을 입력하세요 (개인 데이터의 파일명이 됩니다): ");
+ 
     scanf("%s", name);
-
+    getchar();
     count = loadFromFile(data, name);
 
     while (1)

@@ -245,7 +245,7 @@ int deleteExpense(Data *Data, int count) // 삭제 함수
         break;
     default:
         printf("삭제를 종료합니다!\n");
-        return;
+        return 1;
         break;
 
     }
@@ -641,12 +641,15 @@ int setExpenseGoal(Data *Data, int count, Goal *Goal, char filename[100]) // 지
         }
         else return 0;
     }
+    else{
+        printf("기존 목표 파일이 없거나 열수 없어 새로 만듭니다\n");
+    }
     fclose(goalfile);
 
     goalfile = fopen(goalname, "w");
     if (goalfile == NULL)
     {
-        printf("목표 설정에 실패했습니다.\n");
+        printf("목표 설정 파일을 열 수 없습니다.\n");
         return 0;
     }
 
